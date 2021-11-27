@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Linking } from "react-native";
+import { View, Linking, FlatList, Dimensions, TouchableOpacity } from "react-native";
 import firebase from '../../firebase'
 import {
   Layout,
@@ -10,20 +10,80 @@ import {
   SectionContent,
   useTheme,
 } from "react-native-rapi-ui";
-
+import {AuthContext} from '../provider/AuthProvider'
+import MyBalance from "../pieces/MyBalance";
+import useGetMyGroups from "../hooks/useGetMyGroups";
+import useGetOtherGroups from "../hooks/useGetOtherGroups";
+import GroupDetails from "../pieces/GroupDetails";
 export default function ({ navigation }) {
-  const { isDarkmode, setTheme } = useTheme("dark");
-  return (
+
+  let groups = useGetMyGroups().docs
+ let invitedGroups = useGetOtherGroups().docs 
+ 
+  const renderItem = ({item}) =>(<>
+  <TouchableOpacity onPress={() => {
+      navigation.navigate("ViewGroup", {item});
+    }}>
+    <View style={{width:150, height:150, margin:5, padding:15, backgroundColor:"black", borderRadius:10}} >      
+   <Text>{item.groupName}</Text></View>
+   </TouchableOpacity>
+   </>
+  )
+
+  const renderInvitedItem = ({item}) =>(
+   
+    <View style={{width:150,  margin:5, padding:15, backgroundColor:"black", borderRadius:10}} >  
+    <GroupDetails data={item}/>    
+   <Text size="sm" style={{marginTop:10}}>{item.status}</Text></View>
+  
+  )
+  
+   return (
     <Layout>
       <View
         style={{
-          flex: 1,
-          alignItems: "center",
-          justifyContent: "center",
-          marginHorizontal: 20,
+             margin: 20,
         }}
       >
-     
+ <Text size="h2" fontWeight="bold">Hello</Text>
+ <View style={{marginVertical:20}}></View>
+        <MyBalance />
+
+<View style={{flexDirection:"row", justifyContent:"space-between", marginTop:40}}>
+  <Text size="h3" fontWeight="bold">My Groups</Text>
+  <TouchableOpacity     onPress={() => {
+      navigation.navigate("CreateGroup");
+    }}><Text size="md">New Group</Text></TouchableOpacity>
+</View>
+
+<FlatList
+            data={groups}
+            horizontal
+            showsHorizontalScrollIndicator={false}               
+                keyExtractor={item => `${item.id}`}
+                renderItem={renderItem}
+                contentContainerStyle={{ 
+                   
+                }}
+            />
+            <View style={{marginVertical:20,}}></View>
+<View style={{ justifyContent:"space-between", flexDirection:"row"}}>
+    <Text size="h3" fontWeight="bold">Invited Groups</Text>
+    <TouchableOpacity     onPress={() => {
+      navigation.navigate("JoinGroup");
+    }}><Text size="md">Join A Group</Text></TouchableOpacity>
+</View>
+
+<FlatList
+            data={invitedGroups}
+            horizontal
+            showsHorizontalScrollIndicator={false}               
+                keyExtractor={item => `${item.id}`}
+                renderItem={renderInvitedItem}
+                contentContainerStyle={{ 
+                   
+                }}
+            />
       </View>
     </Layout>
   );

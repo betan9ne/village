@@ -1,7 +1,7 @@
 import React from 'react';
 import { View } from 'react-native';
-import { Layout, Text } from 'react-native-rapi-ui';
-
+import { Layout, Text, Button } from 'react-native-rapi-ui';
+import firebase from '../../firebase'
 export default function ({ navigation }) {
 	return (
 		<Layout>
@@ -12,6 +12,16 @@ export default function ({ navigation }) {
 					justifyContent: 'center',
 				}}
 			>
+			<Button
+    status="danger"
+    text="Logout"
+    onPress={() => {
+      firebase.auth().signOut();
+    }}
+    style={{
+      marginTop: 10,
+    }}
+  />
 				<Text>This is the Profile tab</Text>
 			</View>
 		</Layout>

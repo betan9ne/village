@@ -18,6 +18,10 @@ import Login from "../screens/auth/Login";
 import Register from "../screens/auth/Register";
 import ForgetPassword from "../screens/auth/ForgetPassword";
 import { AuthContext } from "../provider/AuthProvider";
+import CreateGroup from "../screens/CreateGroup";
+import ViewGroup from "../screens/ViewGroup";
+import JoinGroup from "../screens/JoinGroup";
+import GroupSettings from "../screens/GroupSettings";
 
 // Better put your these secret keys in .env file
 const firebaseConfig = {
@@ -59,6 +63,10 @@ const Main = () => {
     >
       <MainStack.Screen name="MainTabs" component={MainTabs} />
       <MainStack.Screen name="SecondScreen" component={SecondScreen} />
+      <MainStack.Screen name="CreateGroup" component={CreateGroup} />
+      <MainStack.Screen name="ViewGroup" component={ViewGroup} />
+      <MainStack.Screen name="JoinGroup" component={JoinGroup} />
+      <MainStack.Screen name="GroupSettings" component={GroupSettings} />
     </MainStack.Navigator>
   );
 };
