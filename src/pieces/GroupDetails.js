@@ -15,7 +15,11 @@ const GroupDetails = ({data}) => {
 const [item, setdata] = useState([])
 useEffect(() => {
   data && firebase.firestore().collection("groups").doc(data.groupId).get().then((doc)=>{
-        setdata(doc.data())
+    let asd = {
+      id:doc.id,
+      ...doc.data()
+    }
+        setdata(asd)
    })
 }, [data.id])
 

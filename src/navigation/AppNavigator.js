@@ -22,6 +22,9 @@ import CreateGroup from "../screens/CreateGroup";
 import ViewGroup from "../screens/ViewGroup";
 import JoinGroup from "../screens/JoinGroup";
 import GroupSettings from "../screens/GroupSettings";
+import Members from "../screens/Members";
+import AddFunds from "../screens/AddFunds";
+import WithdrawFunds from "../screens/WithdrawFunds";
 
 // Better put your these secret keys in .env file
 const firebaseConfig = {
@@ -67,6 +70,9 @@ const Main = () => {
       <MainStack.Screen name="ViewGroup" component={ViewGroup} />
       <MainStack.Screen name="JoinGroup" component={JoinGroup} />
       <MainStack.Screen name="GroupSettings" component={GroupSettings} />
+      <MainStack.Screen name="Members" component={Members} />
+      <MainStack.Screen name="AddFunds" component={AddFunds} />
+      <MainStack.Screen name="WithdrawFunds" component={WithdrawFunds} />
     </MainStack.Navigator>
   );
 };
@@ -109,7 +115,7 @@ const MainTabs = () => {
           ),
         }}
       />
-      <Tabs.Screen
+      {/* <Tabs.Screen
         name="About"
         component={About}
         options={{
@@ -120,7 +126,7 @@ const MainTabs = () => {
             <TabBarIcon focused={focused} icon={"ios-information-circle"} />
           ),
         }}
-      />
+      /> */}
     </Tabs.Navigator>
   );
 };

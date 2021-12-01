@@ -33,6 +33,10 @@ const JoinAGroup = () =>{
 }
 
 const sendRequest = () =>{
+  firebase.firestore().collection("groupMembers")
+  .where("userId", "==", firebase.auth().currentUser.uid)
+  .where("groupId", "==", groups[0].id).get().then((doc)=>{
+    if(doc.docs.length === 0){
     let data = {
         userId: firebase.auth().currentUser.uid,
         groupId: groups[0].id,
@@ -45,6 +49,13 @@ const sendRequest = () =>{
     }).catch((e)=>{
         console.log(e)
     })
+    }else{
+      alert("Request already sent to this group")
+    }
+  }).catch((e)=>{
+    console.log(e)
+  })
+
 }
 
     return (
@@ -90,7 +101,7 @@ const sendRequest = () =>{
                 <Text size="h3">{groups[0].groupName}</Text>
                 
                 <TouchableOpacity>
-                <Button
+               {groups[0].creator === firebase.auth().currentUser.uid ? <Text size="sm">This is your group</Text> : <Button
               text={"Send Request"}
               onPress={() => {
                 sendRequest();
@@ -99,6 +110,7 @@ const sendRequest = () =>{
                 marginTop: 20,
               }}             
             />
+            }
                 </TouchableOpacity>
             </View>}
             
