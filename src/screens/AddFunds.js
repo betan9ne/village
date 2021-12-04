@@ -27,6 +27,9 @@ const addFundsToGroup = () =>{
         console.log("amount added")
         firebase.firestore().collection("groups").doc(data.id).update({amount:firebase.firestore.FieldValue.increment(parseInt(funds))}).then(()=>{
             console.log("group total updated")
+            firebase.firestore().collection("users").doc(firebase.auth().currentUser.uid).update({wallet:firebase.firestore.FieldValue.increment(parseInt(funds))}).then(()=>{
+              navigation.goBack()
+          })
         })
     }).catch((e)=>{
         console.log(e)
@@ -56,7 +59,7 @@ const addFundsToGroup = () =>{
           <TextInput
               containerStyle={{ marginTop: 15 }}
               placeholder="Enter funds to deposit"
-              value={funds+""}
+              value={funds}
               autoCapitalize="none"
               autoCompleteType="off"
               autoCorrect={false}

@@ -9,13 +9,14 @@ import {
 
 } from "react-native-rapi-ui";
 import * as Clipboard from 'expo-clipboard';
-import { Ionicons, MaterialCommunityIcons,MaterialIcons } from "@expo/vector-icons";
+import { Ionicons, Feather, MaterialCommunityIcons,MaterialIcons } from "@expo/vector-icons";
 import firebase from '../../firebase'
 import useGetUserProfile from "../hooks/useGetUserProfile";
 import useGetTransactionHistory from "../hooks/useGetTransactionHistory";
 
 const ViewGroup = ({navigation, route}) => {
     let data = route.params.item
+    let user = useGetUserProfile(firebase.auth().currentUser.uid).docs
     let groupCreator = useGetUserProfile(data.creator).docs
     let transactions = useGetTransactionHistory(data.id).docs
     const [balance, setbalance] = useState(0)
@@ -63,8 +64,8 @@ const ViewGroup = ({navigation, route}) => {
           }}
         >
          <View style={{padding:15, marginBottom:20, backgroundColor:"black", borderRadius:10}}>
-            <Text size="h4" style={{marginBottom:20}}>Current Balance</Text>
-            <Text size="h3" fontWeight="bold">ZMK {balance.amount ? balance.amount : 0}</Text>
+            <Text size="h4" style={{marginBottom:20}}>Current Group Balance</Text>
+            <Text size="h3" fontWeight="bold">ZMW {balance.amount} (ZMK {user.wallet && user.wallet})</Text>
         </View>
         <View style={{justifyContent:"space-between", marginVertical:10, flexDirection:"row"}}>
             <Text>Share Invite Code</Text>
@@ -89,6 +90,13 @@ const ViewGroup = ({navigation, route}) => {
         <Text>Get Loan</Text>
         </View>
               </TouchableOpacity>
+              {data.creator === firebase.auth().currentUser.uid ? 
+              <TouchableOpacity onPress={()=>navigation.navigate("GroupSettings", {data})}>
+              <View  style={{justifyContent:"center", alignItems:"center"}}>
+        <Feather name="settings" size={28} color="white" style={{padding:10, backgroundColor:"black", margin:10, borderRadius:10}} />
+        <Text>Settings</Text>
+        </View>
+       </TouchableOpacity> : null}
 
         <View  style={{justifyContent:"center", alignItems:"center"}}>
         <MaterialCommunityIcons name="location-exit" size={28} color="white" style={{padding:10, backgroundColor:themeColor.danger300, margin:10, borderRadius:10}} />

@@ -10,9 +10,12 @@ import {
 } from "react-native-rapi-ui";
 import { Ionicons } from "@expo/vector-icons";
 import firebase from '../../firebase'
+import useGetUserProfile from "../hooks/useGetUserProfile";
 
 const WithdrawFunds = ({navigation, route})  => {
     let data = route.params.data
+    let user = useGetUserProfile(firebase.auth().currentUser.uid).docs
+
     const [funds, setfunds] = useState(0)
 
 const addFundsToGroup = () =>{
@@ -46,7 +49,7 @@ const addFundsToGroup = () =>{
     return (
         <Layout>
         <TopNav
-          middleContent="Withdraw Funds"
+          middleContent="Get a loan"
           leftContent={
             <Ionicons
               name="chevron-back"
@@ -62,7 +65,10 @@ const addFundsToGroup = () =>{
             margin:20
           }}
         >
-           <Text fontWeight="bold">Withdraw Funds</Text>
+           <Text fontWeight="bold">Get a loan</Text>
+           <Text>Current Balance : {user && user.wallet}</Text>
+           <Text>Total Loan Amount  : {user && user.wallet * 3}</Text>
+           <Text>Interest: 15%</Text>
           <TextInput
               containerStyle={{ marginTop: 15 }}
               placeholder="Enter funds to withdraw"
@@ -73,6 +79,7 @@ const addFundsToGroup = () =>{
               keyboardType="numeric"
               onChangeText={(text) => setfunds(text)}
             /> 
+            <Text>{(funds * 0.15) + funds} Repayment Amount</Text>
             <Button
               text={"Withdraw Funds"}
               onPress={() => {

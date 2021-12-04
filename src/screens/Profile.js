@@ -26,7 +26,10 @@ export default function ({ navigation }) {
 			<Text style={{fontSize:18}} fontWeight='bold'>Edit Profile</Text>
 		</View>
 		<View style={{padding:20, marginBottom:20, backgroundColor:"black", borderRadius:10}}>
-			<Text style={{fontSize:18}} fontWeight='bold'>Concept</Text>
+			<Text style={{fontSize:18}} fontWeight='bold'>Constitution</Text>
+		</View>
+		<View style={{padding:20, marginBottom:20, backgroundColor:"black", borderRadius:10}}>
+			<Text style={{fontSize:18}} fontWeight='bold'>Documents</Text>
 		</View>
 		<View style={{padding:20, marginBottom:20, backgroundColor:"black", borderRadius:10}}>
 			<Text style={{fontSize:18}} fontWeight='bold'>Settings</Text>
