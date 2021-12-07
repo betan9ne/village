@@ -24,8 +24,16 @@ const createAGroup = () =>{
         inviteCode:Math.random().toString(20).substr(2, 8),
         createAt :new Date(Date.now()).toLocaleDateString()
     }
-    firebase.firestore().collection("groups").add(data).then(()=>{
-        console.log("group added")
+    firebase.firestore().collection("groups").add(data).then((doc)=>{
+       firebase.firestore().collection("groupMembers").add({
+         groupId : doc.id,
+         userId:firebase.auth().currentUser.uid,
+         status : 1
+       }).then(()=>{
+           
+       })
+   //   console.log(doc)
+   navigation().goBack()
     }).catch((e)=>{
         console.log(e)
     })

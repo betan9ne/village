@@ -23,10 +23,17 @@ useEffect(() => {
    })
 }, [data.id])
 
+if(item.creator === firebase.auth().currentUser.uid)
+{
+  return(
+    null
+  )
+}
+else
     return ( 
       <TouchableOpacity onPress={() => {
         navigation.navigate("ViewGroup", {item});
-      }}>
+      }}>      
            <Text style={{fontSize:16}}>{item.groupName}</Text>
         </TouchableOpacity>
     )

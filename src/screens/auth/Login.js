@@ -125,15 +125,7 @@ export default function ({ navigation }) {
               alignItems: "center",
               backgroundColor: isDarkmode ? "#17171E" : themeColor.white100,
             }}
-          >
-            <Image
-              resizeMode="contain"
-              style={{
-                height: 220,
-                width: 220,
-              }}
-              source={require("../../../assets/login.png")}
-            />
+          >        
           </View>
           <View
             style={{
@@ -177,7 +169,7 @@ export default function ({ navigation }) {
 {result ? renderVerificationCode() : null}
             <View
               style={{
-                flexDirection: "row",
+                flexDirection: "column",
                 alignItems: "center",
                 marginTop: 15,
                 justifyContent: "center",
@@ -194,30 +186,14 @@ export default function ({ navigation }) {
                   fontWeight="bold"
                   style={{
                     marginLeft: 5,
+                    marginTop:20,
                   }}
                 >
                   Register here
                 </Text>
               </TouchableOpacity>
             </View>
-            <View
-              style={{
-                flexDirection: "row",
-                alignItems: "center",
-                marginTop: 10,
-                justifyContent: "center",
-              }}
-            >
-              <TouchableOpacity
-                onPress={() => {
-                  navigation.navigate("ForgetPassword");
-                }}
-              >
-                <Text size="md" fontWeight="bold">
-                  Forget password
-                </Text>
-              </TouchableOpacity>
-            </View>
+            
             <View
               style={{
                 flexDirection: "row",
@@ -226,21 +202,7 @@ export default function ({ navigation }) {
                 justifyContent: "center",
               }}
             >
-              <TouchableOpacity
-                onPress={() => {
-                  isDarkmode ? setTheme("light") : setTheme("dark");
-                }}
-              >
-                <Text
-                  size="md"
-                  fontWeight="bold"
-                  style={{
-                    marginLeft: 5,
-                  }}
-                >
-                  {isDarkmode ? "☀️ light theme" : "🌑 dark theme"}
-                </Text>
-              </TouchableOpacity>
+             
             </View>
           </View>
         </ScrollView>

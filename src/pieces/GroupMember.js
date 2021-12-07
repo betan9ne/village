@@ -23,8 +23,7 @@ const GroupMember = ({data}) => {
       alert(e)
     })
   }
-
-   console.log(data)
+ 
     return (
         <View style={{  backgroundColor:"black", borderRadius:10,
         padding:20, marginVertical:5 }}>
@@ -32,7 +31,7 @@ const GroupMember = ({data}) => {
           style={{
         justifyContent:"space-between", flexDirection:"row"
           }}
-        ><Text size="h3">{user.fullName}</Text>
+        ><Text size="md">{user.fullName}</Text>
              <Text size="sm">{user.phoneNumber}</Text>
         </View>
        {data.creator === firebase.auth().currentUser.uid ? data.status === "Pending" ? 

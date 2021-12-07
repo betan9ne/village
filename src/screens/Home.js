@@ -34,7 +34,8 @@ export default function ({ navigation }) {
    
     <View style={{width:150,  margin:5, padding:15, backgroundColor:"black", borderRadius:10}} >  
     <GroupDetails data={item}/>    
-   <Text size="sm" style={{marginTop:10}}>{item.status}</Text></View>
+   {/* <Text size="sm" style={{marginTop:10}}>{item.status}</Text> */}
+   </View>
   
   )
   
@@ -45,7 +46,7 @@ export default function ({ navigation }) {
              margin: 20,
         }}
       >
- <Text size="h2" fontWeight="bold">Hello</Text>
+ <Text size="h3" fontWeight="bold">Hello</Text>
  <View style={{marginVertical:20}}></View>
         <MyBalance />
 
@@ -53,7 +54,7 @@ export default function ({ navigation }) {
   <Text size="h3" fontWeight="bold">My Groups</Text>
   <TouchableOpacity     onPress={() => {
       navigation.navigate("CreateGroup");
-    }}><Text size="md">New Group</Text></TouchableOpacity>
+    }}><Text size="sm">New Group</Text></TouchableOpacity>
 </View>
 
 <FlatList
@@ -71,7 +72,7 @@ export default function ({ navigation }) {
     <Text size="h3" fontWeight="bold">Invited Groups</Text>
     <TouchableOpacity     onPress={() => {
       navigation.navigate("JoinGroup");
-    }}><Text size="md">Join A Group</Text></TouchableOpacity>
+    }}><Text size="sm">Join A Group</Text></TouchableOpacity>
 </View>
 
 <FlatList

@@ -10,27 +10,62 @@ import {
 } from "react-native-rapi-ui";
 import { Ionicons } from "@expo/vector-icons";
 import firebase from '../../firebase'
+import { FirebaseRecaptcha } from "expo-firebase-recaptcha";
 
 const AddFunds = ({navigation, route}) => {
     let data = route.params.data
     const [funds, setfunds] = useState(0)
+    const [msg, setmsg] = useState("")
 
-const addFundsToGroup = () =>{
+
+    const checkForWallet = () =>{
+      firebase.firestore().collection("userWallets").where("groupId","==", data.id).where("userId", "==", firebase.auth().currentUser.uid).get().then((doc)=>{
+        console.log("here", doc)
+        if(doc.docs.length === 0)
+        {
+          firebase.firestore().collection("userWallets").add(
+            {
+              wallet:firebase.firestore.FieldValue.increment(parseInt(funds)),
+              userId: firebase.auth().currentUser.uid,
+              groupId:data.id,
+              timeStamp : firebase.firestore.FieldValue.serverTimestamp()
+            }
+            ).then(()=>{
+            navigation.goBack()
+        })
+        }
+        else{
+          firebase.firestore().collection("userWallets").doc(doc.docs[0].id).update(
+            {
+              wallet:firebase.firestore.FieldValue.increment(parseInt(funds)),             
+              timeStamp : firebase.firestore.FieldValue.serverTimestamp()
+            }
+            ).then(()=>{
+            navigation.goBack()
+        })
+        }
+      })
+    }
+const savings = () =>{
+  if(funds < data.minimumAmount)
+  {
+    setmsg("Amount is lower than the set minimum amount")
+    return 
+  }
     let data_ = {
         userId: firebase.auth().currentUser.uid,
         groupId: data.id,
-        type: "Deposit",
-        amount:parseInt(funds),
-        createAt :new Date(Date.now()).toLocaleDateString()
+        interest: data.interest,
+        month:new Date().getMonth()+1,
+        type: "saving",
+        amount:parseFloat(funds),
+        amountWithInterest: parseFloat(funds) * (data.interest/100),
+        createAt : firebase.firestore.FieldValue.serverTimestamp()
     }
-    firebase.firestore().collection("transactions").add(data_).then(()=>{
+  
+    firebase.firestore().collection("savings").add(data_).then(()=>{
         console.log("amount added")
-        firebase.firestore().collection("groups").doc(data.id).update({amount:firebase.firestore.FieldValue.increment(parseInt(funds))}).then(()=>{
-            console.log("group total updated")
-            firebase.firestore().collection("users").doc(firebase.auth().currentUser.uid).update({wallet:firebase.firestore.FieldValue.increment(parseInt(funds))}).then(()=>{
-              navigation.goBack()
-          })
-        })
+       navigation.goBack()
     }).catch((e)=>{
         console.log(e)
     })
@@ -39,7 +74,7 @@ const addFundsToGroup = () =>{
     return (
         <Layout>
         <TopNav
-          middleContent="Add Funds"
+          middleContent="Save"
           leftContent={
             <Ionicons
               name="chevron-back"
@@ -58,7 +93,7 @@ const addFundsToGroup = () =>{
            <Text fontWeight="bold">Add Funds</Text>
           <TextInput
               containerStyle={{ marginTop: 15 }}
-              placeholder="Enter funds to deposit"
+              placeholder="Enter funds to save"
               value={funds}
               autoCapitalize="none"
               autoCompleteType="off"
@@ -66,10 +101,12 @@ const addFundsToGroup = () =>{
               keyboardType="numeric"
               onChangeText={(text) => setfunds(text)}
             /> 
+            <Text>Minimum Deposit ({data.minimumAmount})</Text>
+            <Text style={{color:themeColor.danger}}>{msg}</Text>
             <Button
-              text={"Add Funds"}
+              text={"Save Funds"}
               onPress={() => {
-                addFundsToGroup()
+                savings()
               }}
               style={{
                 marginTop: 20,

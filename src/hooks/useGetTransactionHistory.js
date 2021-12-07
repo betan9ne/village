@@ -6,9 +6,11 @@ const useGetTransactionHistory = (groupId)=> {
 
     React.useEffect(() => { 
 
-    firebase.firestore().collection("transactions")
+    firebase.firestore().collection("savings")
     .where("userId", "==", firebase.auth().currentUser.uid)
     .where("groupId", "==", groupId)
+    .orderBy("month", "asc")
+    .limit(12)
     .onSnapshot((snap)=>{       
         let data = [] 
           snap.docs.forEach(e=>{

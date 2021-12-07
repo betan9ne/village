@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from "react";
-import { TouchableOpacity, View } from "react-native";
+import { TouchableOpacity, View,ScrollView } from "react-native";
 import {
   Layout,
   TopNav,
@@ -22,11 +22,18 @@ const GroupSettings = ({navigation, route}) => {
     const [endDate, setendDate] = useState("")
     const [miniAmount, setminiAmount] = useState(0)
     const [maxUsersPerGroup, setmaxUsersPerGroup] = useState(0)
+    const [maxSavingsAmount, setmaxSavingsAmount] = useState(0)
  
     const updateINterestRate = ()=>{
       firebase.firestore().collection("groups").doc(data.id).update({interest:parseInt(interestRate)}).then(()=>{
        console.log("updated interest")
     })
+    }
+
+    const updateSavingsAmount = () =>{
+      firebase.firestore().collection("groups").doc(data.id).update({maxSavingsAmount:parseInt(maxSavingsAmount)}).then(()=>{
+        console.log("updated max savings")
+     })
     }
 
     const updatemaxUsersPerGroup = () =>{
@@ -79,7 +86,7 @@ const GroupSettings = ({navigation, route}) => {
            margin:20
           }}
         >
-     
+     <ScrollView>
         <Text>Set Minimum Amount ({docs && docs.minimumAmount})</Text>
              <TextInput
               containerStyle={{ marginTop: 15 }}
@@ -182,7 +189,32 @@ const GroupSettings = ({navigation, route}) => {
               }}
              
             />
+
+            
+<Text style={{marginTop:10}}>Set maximum savings amount ({docs && docs.maxSavingsAmount})</Text>
+             <TextInput
+              containerStyle={{ marginTop: 15 }}
+              placeholder="Enter maximum saving amount"
+              value={maxSavingsAmount}
+              autoCapitalize="none"
+              autoCompleteType="off"
+              autoCorrect={false}
+              keyboardType="numeric"
+              onChangeText={(text) => setmaxSavingsAmount(text)}
+            /> 
+            <Button
+              text={"Set maximum savings amount"}
+              onPress={() => {
+                updateSavingsAmount()
+              }}
+              style={{
+                marginTop: 20,
+              }}
+             
+            />
+            </ScrollView>
         </View>
+        
       </Layout>
     )
 }

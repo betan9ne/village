@@ -1,12 +1,13 @@
 import React from 'react';
 import { View } from 'react-native';
+import { TouchableOpacity } from 'react-native-gesture-handler';
 import { Layout, Text, Button, themeColor, useTheme } from 'react-native-rapi-ui';
 import firebase from '../../firebase'
 import useGetUserProfile from '../hooks/useGetUserProfile';
 export default function ({ navigation }) {
 
 	let user = useGetUserProfile(firebase.auth().currentUser.uid).docs
-	const { isDarkmode, setTheme } = useTheme();
+
 	return (
 		<Layout>
 			<View
@@ -23,7 +24,9 @@ export default function ({ navigation }) {
 		
 		 
 		<View style={{padding:20, marginBottom:20, backgroundColor:themeColor.info900, borderRadius:10}}>
+		<TouchableOpacity onPress={()=>navigation.navigate("EditProfile")}>
 			<Text style={{fontSize:18}} fontWeight='bold'>Edit Profile</Text>
+			</TouchableOpacity>
 		</View>
 		<View style={{padding:20, marginBottom:20, backgroundColor:"black", borderRadius:10}}>
 			<Text style={{fontSize:18}} fontWeight='bold'>Constitution</Text>
@@ -53,7 +56,7 @@ export default function ({ navigation }) {
     }}
   />
 		</View> */}
-		<View style={{height:0.4, backgroundColor:themeColor.primary500, marginVertical:10}}></View>
+		
 			<Button
     status="danger"
     text="Logout"
