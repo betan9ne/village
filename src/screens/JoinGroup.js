@@ -41,7 +41,7 @@ const sendRequest = () =>{
         userId: firebase.auth().currentUser.uid,
         groupId: groups[0].id,
         creator:groups[0].creator,
-        status:"Pending",
+        status:0,
         createAt :new Date(Date.now()).toLocaleDateString()
     }
     firebase.firestore().collection("groupMembers").add(data).then(()=>{

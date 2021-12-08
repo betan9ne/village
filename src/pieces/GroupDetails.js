@@ -10,6 +10,7 @@ import {
   
   } from "react-native-rapi-ui";
   import {useNavigation} from '@react-navigation/native'
+
 const GroupDetails = ({data}) => {
  let navigation = useNavigation()
 const [item, setdata] = useState([])
@@ -31,11 +32,13 @@ if(item.creator === firebase.auth().currentUser.uid)
 }
 else
     return ( 
-      <TouchableOpacity onPress={() => {
+     data.status === 1 ? <TouchableOpacity onPress={() => {
         navigation.navigate("ViewGroup", {item});
       }}>      
            <Text style={{fontSize:16}}>{item.groupName}</Text>
         </TouchableOpacity>
+        : 
+        <Text size="sm" style={{fontSize:16}}>{item.groupName}{"\n"}{data.status === 0 ? "Pending" : null}</Text>
     )
 }
 

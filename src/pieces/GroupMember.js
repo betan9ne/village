@@ -34,11 +34,11 @@ const GroupMember = ({data}) => {
         ><Text size="md">{user.fullName}</Text>
              <Text size="sm">{user.phoneNumber}</Text>
         </View>
-       {data.creator === firebase.auth().currentUser.uid ? data.status === "Pending" ? 
+       {data.creator === firebase.auth().currentUser.uid ? data.status === 0 ? 
        <View style={{flexDirection:"row",justifyContent:"space-between" }}>
        <Button text={"Accept"}
               onPress={() => {
-                updateStatus("Accepted")
+                updateStatus(1)
               }}
               style={{
                 marginTop: 20, flex:1, marginRIght:5
@@ -46,7 +46,7 @@ const GroupMember = ({data}) => {
                <Button text={"Decline"}
                color={themeColor.danger900}
               onPress={() => {
-                updateStatus("Declined")
+                updateStatus(2)
               }}
               style={{
                 marginTop: 20, flex:1, marginLeft:5,

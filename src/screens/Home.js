@@ -1,4 +1,4 @@
-import React from "react";
+import React,{useEffect, useState} from "react";
 import { View, Linking, FlatList, Dimensions, TouchableOpacity } from "react-native";
 import firebase from '../../firebase'
 import {
@@ -18,8 +18,27 @@ import GroupDetails from "../pieces/GroupDetails";
 export default function ({ navigation }) {
 
   let groups = useGetMyGroups().docs
- let invitedGroups = useGetOtherGroups().docs 
+  let invitedGroups = useGetOtherGroups().docs 
+const [docs, setDocs] = useState([])
+  let overallBalance = 0
+ useEffect(() => {
+    firebase.firestore().collection("savings").where("userId", "==", firebase.auth().currentUser.uid).onSnapshot((snap)=>{
+      let data = [] 
+      snap.docs.forEach(e=>{
+          let asd = {
+                id:e.id,
+                ...e.data()
+          }
+          data.push(asd)
+      })
+      setDocs(data)
+    })
+ }, [])
  
+ docs.map((a)=>{
+  overallBalance = overallBalance + (a.amount +  a.amountWithInterest)
+})
+
   const renderItem = ({item}) =>(<>
   <TouchableOpacity onPress={() => {
       navigation.navigate("ViewGroup", {item});
@@ -30,14 +49,18 @@ export default function ({ navigation }) {
    </>
   )
 
-  const renderInvitedItem = ({item}) =>(
+  const renderInvitedItem = ({item}) => {
+
+    return(
+      <View style={{width:150,  margin:5, padding:15, backgroundColor:"black", borderRadius:10}} >  
+      <GroupDetails data={item}/>    
+       </View>
+    )
+  }
    
-    <View style={{width:150,  margin:5, padding:15, backgroundColor:"black", borderRadius:10}} >  
-    <GroupDetails data={item}/>    
-   {/* <Text size="sm" style={{marginTop:10}}>{item.status}</Text> */}
-   </View>
+
   
-  )
+  
   
    return (
     <Layout>
@@ -48,7 +71,7 @@ export default function ({ navigation }) {
       >
  <Text size="h3" fontWeight="bold">Hello</Text>
  <View style={{marginVertical:20}}></View>
-        <MyBalance />
+        <MyBalance data = {overallBalance}/>
 
 <View style={{flexDirection:"row", justifyContent:"space-between", marginTop:40}}>
   <Text size="h3" fontWeight="bold">My Groups</Text>

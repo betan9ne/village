@@ -10,16 +10,34 @@ import {
 import { Ionicons } from "@expo/vector-icons";
 import firebase from '../../firebase'
 import useGetUserLoan from "../hooks/useGetUserLoan";
+import useGetLoanPayments from "../hooks/useGetLoanPayments";
 
 const PayLoan = ({navigation, route}) => {
     let data = route.params.data 
+    let loadId = route.params.loanStatus[0].id
     let loan = useGetUserLoan(data.id).docs[0]
+    let totalPaid = 0
     const [funds, setfunds] = useState(0)
     const [msg, setmsg] = useState("")
-    console.table(loan)
+  
+   let payments = useGetLoanPayments(data.id, loadId).docs
+   
+    console.log(payments)
+
     const payBackLoan = () =>{
       if(loan === undefined)
       {
+        return
+      }
+      let sdf = 0
+      payments.map((a) =>{
+        sdf = sdf + a.amountPaid
+      })
+      
+      let asd  = sdf + parseFloat(funds)
+      if(asd > loan.totalPayment)
+      {
+        setmsg("You have overpaid"+ sdf + " " + parseFloat(funds))
         return
       }
       firebase.firestore().collection("loanPayment").add({
@@ -30,31 +48,26 @@ const PayLoan = ({navigation, route}) => {
           createdAt : new Date(Date.now()).toLocaleDateString(),
           month : new Date().getMonth()+1,
       }).then(()=>{
-        navigation.goBack()
+        if(sdf == loan.totalPayment)
+        {
+          firebase.firestore().collection("loans").doc(loan.id).update({status: 0})
+          .then(()=>{
+            navigation.goBack()
+          })
+        }
+        else{
+          navigation.goBack()
+        }
+        
       }).catch((e)=>{
         alert(e0)
       })
-      // firebase.firestore().collection("loanPayment").doc(loan.id).update({amountPaid : firebase.firestore.FieldValue.increment(parseFloat(funds))}).then((doc)=>{
-      //     firebase.firestore().collection("loans").doc(loan.id).get().then((doc)=>{
-      //       console.log(doc.data())
-      //         if(loan.totalPayment.toFixed(2) === doc.data().amountPaid.toFixed(2))
-      //           {
-      //             firebase.firestore().collection("loans").doc(loan.id).update({status:"closed"}).then(()=>{
-      //               navigation.goBack()
-      //             }).catch((e)=>{
-      //               alert("Error updating status of the loan")
-      //             })
-      //           }
-      //           else{
-      //             console.log("still owing")
-      //           }
-      //     })
-
-       
-      // }).catch((e)=>{
-      //   alert(e)
-      // })
     }
+    
+    payments.map((a) =>{
+      totalPaid = totalPaid + a.amountPaid
+    })
+    
     return (
         <Layout>
         <TopNav
@@ -86,13 +99,13 @@ const PayLoan = ({navigation, route}) => {
               keyboardType="numeric"
               onChangeText={(text) => setfunds(text)}
             /> 
-            <Text>Amount Pending {loan.totalPayment.toFixed(2)}</Text>
+            <Text>Amount Pending {loan.totalPayment.toFixed(2)-parseFloat(totalPaid).toFixed(2)}</Text>
             <Text>Monthly Payment ({loan.monthlyPayment})</Text>
             <Text>Total Payment ({loan.totalPayment})</Text>
             <Text>Repayment Period {loan.repaymentPeriod} month(s)</Text>
             <Text style={{color:themeColor.danger}}>{msg}</Text>
             <Button
-              text={"pay Loan"}
+              text={"Pay Loan"}
               onPress={() => {
                 payBackLoan()
               }}

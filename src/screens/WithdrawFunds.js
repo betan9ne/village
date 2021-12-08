@@ -11,25 +11,27 @@ import {
 import { Ionicons } from "@expo/vector-icons";
 import firebase from '../../firebase'
 import useGetUserProfile from "../hooks/useGetUserProfile";
+import useGetTotalSaved from "../hooks/useGetTotalSaved";
 
 const WithdrawFunds = ({navigation, route})  => {
     let data = route.params.data
-    let user = useGetUserProfile(firebase.auth().currentUser.uid).docs
+   let totalSaved = useGetTotalSaved(data.id).docs
     const [funds, setfunds] = useState("")
     const [repaymentPeriod, setrepaymentPeriod] = useState(0)
     const [monthlyPayment, setmonthlyPayment] = useState(0)
     const [totalPayment, settotalPayment] = useState(0)
     const [totalInstallment, settotalInstallment] = useState(0)
+    const [msg, setmsg] = useState("")
 
 const addFundsToGroup = () =>{
     if(data.amount <= 0)
     {
-        alert("no funds")
+      setmsg("you do not have enough funds")
         return
     }
-    if(funds >= data.amount*3)
+    if(funds > totalSaved*3)
     {
-        alert("you can't withdraw more than 3 times the amount")
+      setmsg("You can't withdraw more than 3 times the amount")
         return
     } 
     if (funds >= 1000 && funds <= 5000)
@@ -61,15 +63,13 @@ const addFundsToGroup = () =>{
         // Compute monthly payments
         const x = Math.pow(1 + calculatedInterest, calculatedPayment);
         const monthly = (principal * x * calculatedInterest)/(x-1);
-
-
-        // Check if value is finite
-
+ 
         if(isFinite(monthly)){
           setmonthlyPayment(monthly.toFixed(2))
          settotalPayment((monthly * calculatedPayment).toFixed(2))
          settotalInstallment(((monthly * calculatedPayment) - principal).toFixed(2))
          console.table(monthlyPayment, totalPayment, totalInstallment)
+         
          let data_ = {
           userId: firebase.auth().currentUser.uid,
           groupId: data.id,
@@ -119,10 +119,10 @@ const addFundsToGroup = () =>{
         >
         <View style={{flexDirection:"row",padding:15, backgroundColor:"black", borderRadius:10, justifyContent:"space-between"}}>
         <View>
-        <Text size="sm">Current Balance</Text><Text size="h3"></Text>
+        <Text size="sm">Current Balance</Text><Text size="h3">{totalSaved}</Text>
         </View>
         <View>
-        <Text size="sm">Total Loan Amount</Text><Text size="h3"></Text>
+        <Text size="sm">Total Loan Amount</Text><Text size="h3">{totalSaved * 3}</Text>
         </View>
         
         </View> 
@@ -138,6 +138,7 @@ const addFundsToGroup = () =>{
               keyboardType="numeric"
               onChangeText={(text) => setfunds(text)}
             /> 
+            <Text size="sm" style={{color:themeColor.danger}}>{msg}</Text>
              <Button
               text={"Get Loan"}
               onPress={() => {

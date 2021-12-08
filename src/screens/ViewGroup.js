@@ -24,15 +24,11 @@ const ViewGroup = ({navigation, route}) => {
     let user = useGetUserProfile(firebase.auth().currentUser.uid).docs
     let groupCreator = useGetUserProfile(data.creator).docs
     let transactions = useGetTransactionHistory(data.id).docs
-    const [balance, setbalance] = useState(0)
+  
+    let userBalance = 0
     const [currentMOnthDeposit, setcurrentMOnthDeposit] = useState(0)
 
-    useEffect(() => {
-      firebase.firestore().collection("groups").doc(data.id).onSnapshot((doc)=>{        
-        setbalance(doc.data())
-    })     
-    }, [])
-
+    //console.log(loanStatus)
     useEffect(() => {
       getMOnthDeposit()
     }, [data.id])
@@ -44,7 +40,11 @@ const ViewGroup = ({navigation, route}) => {
         setcurrentMOnthDeposit(doc.docs.length)
       })
     }
-
+ 
+    savings.map((a)=>{
+      userBalance = userBalance + (a.amount +  a.amountWithInterest)
+    })
+ 
     const copyToClipboard = (copy) => {
         Clipboard.setString(copy);
         console.log("Copied")
@@ -83,8 +83,8 @@ const ViewGroup = ({navigation, route}) => {
           }}
         >
          <View style={{padding:15, marginBottom:20, backgroundColor:"black", borderRadius:10}}>
-            <Text size="h4" style={{marginBottom:20}}>Current Group Balance</Text>
-            <Text size="h3" fontWeight="bold">ZMW {balance.amount} ({user.wallet && user.wallet})</Text>
+            <Text size="h4" style={{marginBottom:20}}>My Savings</Text>
+            <Text size="h3" fontWeight="bold">ZMW {userBalance}</Text>
             <Text size="sm" style={{color:themeColor.danger}}>{loanStatus.length === 0 ? null : "Loan Active" }</Text>
         </View>
         {data.creator === firebase.auth().currentUser.uid ? 
@@ -113,7 +113,7 @@ const ViewGroup = ({navigation, route}) => {
         <Text size="sm">Get Loan</Text>
         </View>
               </TouchableOpacity> : loanStatus[0].status === 1 ? 
-        <TouchableOpacity onPress={()=>navigation.navigate("PayLoan",{data})}>
+        <TouchableOpacity onPress={()=>navigation.navigate("PayLoan",{data, loanStatus})}>
         <View style={{justifyContent:"center", alignItems:"center"}}>
         <MaterialCommunityIcons  style={{padding:10, backgroundColor:"black", margin:10, borderRadius:10}} name="cash-usd-outline" size={28} color="white" />
         <Text size="sm">Pay Loan</Text>

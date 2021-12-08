@@ -33,7 +33,7 @@ const createAGroup = () =>{
            
        })
    //   console.log(doc)
-   navigation().goBack()
+   navigation.goBack()
     }).catch((e)=>{
         console.log(e)
     })
